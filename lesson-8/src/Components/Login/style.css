@@ -1,0 +1,41 @@
+.App {
+    text-align: center;
+  }
+  
+.form{
+    display:flex nowrap;
+    margin-left: 450px;
+    flex-direction: column;
+    border: solid gray 5px;
+    border-radius: 7%;
+    width: 500px;
+    height: 300px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+  
+div{
+    padding: 10px;
+  }
+  
+  .username{
+    margin-left:60px;
+  }
+  
+  .name{
+    margin-left:88px;
+  }
+  
+  .password{
+    margin-left:65px;
+  }
+  
+  .passwordConfirm{
+    margin-left:5px;
+  }
+  
+  .button{
+    cursor: pointer;
+    background-color:rgb(71, 255, 240);
+    border-radius: 10px;
+  }
+  
