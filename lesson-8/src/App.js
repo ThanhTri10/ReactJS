@@ -28,17 +28,21 @@ function App() {
             <LoginPage />
           </Route>
           <PrivateRoute exact component={HomePage} path="/homepage" />
-          {/* <PrivateRoute exact component={AddPhotoPage} path="/add-photos" /> */}
+          <PrivateRoute exact component={AddPhotoPage} path="/add-photos" />
         </Switch>
       </Router>
     </UserContext.Provider>
   );
 }
 
-function PrivateRoute(Component, path){
+function PrivateRoute({ component: Component, path, ...rest }) {
   let userId = localStorage.getItem("userId");
-  return <Route>
-    {userId != null && userId !== "" ? <Component/> : <Redirect exact to= '/login'/> }
+  return <Route {...rest}
+    render={(props) => {
+      return userId != null && userId !== "" ? <Component {...props} /> : <Redirect to={{
+        pathname: "/login"
+      }} />
+    }}>
   </Route>
 }
 RegisterPage = withRouter(RegisterPage);
@@ -184,7 +188,7 @@ function LoginPage(){
 }
 
 
-function HomePage() {HomePage = withRouter(HomePage);
+function HomePage() { 
   let [listImage, setListImage] = useState([]);
   let [page, setPage] = useState(1);
   let [limit, setLimit] = useState(10);
@@ -248,3 +252,50 @@ function HomePage() {HomePage = withRouter(HomePage);
   </>
 )
 };
+
+
+function AddPhotoPage(){
+  const [user, setUser] = useState({image:"", description:""})
+  let userContext = useContext(UserContext);
+  let history = useHistory();
+  console.log(userContext);
+  const handleImageChange = e =>{
+    e.preventDefault()
+    setUser({...user, image: e.target.value});
+  };
+  const handleDescriptionChange = e =>{
+    e.preventDefault()
+    setUser({...user, description: e.target.value});
+  };
+  const handleSubmitForm = e => {
+    e.preventDefault()
+    fetch(`https://635d318dfc2595be26551a65.mockapi.io/api/v1/users/${userContext.userId}/photos`,{
+      method: "POST",
+      body: JSON.stringify({
+        userId: userContext.userId,
+        image: user.image,
+        description: user.description,
+      }),
+      headers: {
+        'Content-type': 'application/json'
+      },
+    }).then((res) => {
+      if(res.status === 201){
+        history.push("/homepage");
+      }
+    })
+  }
+  return(
+    <div>
+      <div>
+          <label>Image:</label>
+          <input type="text" name="image" onChange={handleImageChange} className="image"/>
+        </div>
+        <div>
+          <label>Description:</label>
+          <textarea type="description" name="description" onChange={handleDescriptionChange} className="description"/>
+        </div>
+        <button onClick={handleSubmitForm}>Add Photo</button>
+    </div>
+  )
+}
